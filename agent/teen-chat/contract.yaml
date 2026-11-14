@@ -1,0 +1,14 @@
+name: teen-chat
+install_cmd: bash setup.sh
+run_cmd: >-
+  python3 /bundle/teen-chat/chat.py "{problem_statement_path}" --task-id "{task_id}" --model "{model}"
+final_output: /logs/teen-chat
+
+secrets:
+  ANTHROPIC_API_KEY: anthropic-api-key
+
+defaults:
+  model:
+    type: str
+    required: true
+    description: Model to chat with, for example anthropic/claude-sonnet-4-6

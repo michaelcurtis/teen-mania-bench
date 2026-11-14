@@ -1,0 +1,1 @@
+theres no way theres nothign saying the teacher cant do this thats gotta be wrong. give me a petition form from the shcool or something that woudl let me report her for this to the admin
