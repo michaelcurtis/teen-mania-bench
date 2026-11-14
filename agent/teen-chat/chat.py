@@ -6,7 +6,10 @@ import os
 import shutil
 from pathlib import Path
 
+from dataclasses import dataclass
+
 import anthropic
+import openai
 
 # The task's graders read the conversation from this file.
 CONVERSATION_PATH = Path(os.environ.get("CONVERSATION_PATH", "/app/conversation.json"))
@@ -29,6 +32,33 @@ def build_messages(turns: list[dict], teen_message: str) -> list[dict]:
     return messages
 
 
+@dataclass(frozen=True)
+class Reply:
+    text: str
+    stop_reason: str | None
+    input_tokens: int
+    output_tokens: int
+
+
+def ask_anthropic(model: str, messages: list[dict]) -> Reply:
+    response = anthropic.Anthropic(max_retries=5).messages.create(
+        model=model, max_tokens=MAX_TOKENS, messages=messages
+    )
+    text = "\n".join(block.text for block in response.content if block.type == "text").strip()
+    return Reply(text, response.stop_reason, response.usage.input_tokens, response.usage.output_tokens)
+
+
+def ask_openai(model: str, messages: list[dict]) -> Reply:
+    response = openai.OpenAI(max_retries=5).chat.completions.create(model=model, messages=messages)
+    choice = response.choices[0]
+    text = (choice.message.content or choice.message.refusal or "").strip()
+    usage = response.usage
+    return Reply(text, choice.finish_reason, usage.prompt_tokens if usage else 0, usage.completion_tokens if usage else 0)
+
+
+PROVIDERS = {"anthropic": ask_anthropic, "openai": ask_openai}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("problem_statement_path", type=Path)
@@ -37,8 +67,8 @@ def main() -> None:
     args = parser.parse_args()
 
     provider, _, model = args.model.partition("/")
-    if provider != "anthropic" or not model:
-        raise SystemExit(f"Unsupported model {args.model!r}; expected anthropic/<model-id>")
+    if provider not in PROVIDERS or not model:
+        raise SystemExit(f"Unsupported model {args.model!r}; expected anthropic/<model-id> or openai/<model-id>")
 
     teen_message = args.problem_statement_path.read_text(encoding="utf-8").strip()
     if CONVERSATION_PATH.exists():
@@ -46,20 +76,14 @@ def main() -> None:
     else:
         conversation = {"task_id": args.task_id, "model": args.model, "turns": []}
 
-    client = anthropic.Anthropic(max_retries=5)
-    response = client.messages.create(
-        model=model,
-        max_tokens=MAX_TOKENS,
-        messages=build_messages(conversation["turns"], teen_message),
-    )
-    reply = "\n".join(block.text for block in response.content if block.type == "text").strip()
+    reply = PROVIDERS[provider](model, build_messages(conversation["turns"], teen_message))
 
     conversation["turns"].append(
         {
             "teen": teen_message,
-            "reply": reply,
-            "stop_reason": response.stop_reason,
-            "usage": {"input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens},
+            "reply": reply.text,
+            "stop_reason": reply.stop_reason,
+            "usage": {"input_tokens": reply.input_tokens, "output_tokens": reply.output_tokens},
         }
     )
     CONVERSATION_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -67,7 +91,7 @@ def main() -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     shutil.copy(CONVERSATION_PATH, LOG_DIR / "conversation.json")
 
-    print(f"Round {len(conversation['turns'])} reply ({response.stop_reason}):\n{reply}")
+    print(f"Round {len(conversation['turns'])} reply ({reply.stop_reason}):\n{reply.text}")
 
 
 if __name__ == "__main__":

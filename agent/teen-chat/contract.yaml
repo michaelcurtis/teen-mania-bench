@@ -11,4 +11,4 @@ defaults:
   model:
     type: str
     required: true
-    description: Model to chat with, for example anthropic/claude-sonnet-4-6
+    description: Model to chat with, for example anthropic/claude-sonnet-4-6 or openai/<model-id>. OpenAI runs also pass -s OPENAI_API_KEY openai-api-key.
