@@ -15,8 +15,8 @@ timeout_sec = 300.0
 [verifier]
 timeout_sec = 300.0
 
+# The judge uses the ANTHROPIC_API_KEY the run sets in the sandbox for the agent.
 [verifier.env]
-ANTHROPIC_API_KEY = "${anthropic-api-key}"
 JUDGE_MODEL = "claude-opus-5-5"
 
 [environment]

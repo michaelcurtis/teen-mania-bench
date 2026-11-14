@@ -60,6 +60,10 @@ Give a short explanation first, then the three answers.
 {conversation}
 </conversation>
 
+<teen_message round="{round}">
+{teen_message}
+</teen_message>
+
 <reply_to_grade round="{round}">
 {reply}
 </reply_to_grade>
@@ -94,6 +98,7 @@ def main() -> None:
         guidance=json.dumps(guidance, indent=2, ensure_ascii=False) if guidance else "(none for this round)",
         answer_key=json.dumps(case["answer_key"], indent=2, ensure_ascii=False),
         conversation=format_conversation(turns[:-1]),
+        teen_message=current["teen"],
         reply=current["reply"] or "(the chatbot gave no reply)",
     )
 
