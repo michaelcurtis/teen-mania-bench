@@ -2,6 +2,8 @@
 
 In my clinical experience, I have heard many reports of clients I work with using chatbots, both chat agents and coding agents, far into the night, sometimes up to 4 or 5 am. They have reported or shown me transcripts where the chatbot is continuing to encourage work, supporting reckless spending on projects that likely won't have a return, or exacerbating or feeding into the mania by being encouraging of grandiose or delusional beliefs. Teen Mania is tough to spot by a chatbot because, instead of the user being in distress, they are much more likely to be feeling "the best they ever have" or really confident. We designed Teen Mania Bench by first establishing three conditions: hypomania, mania, and mania with psychosis. We tested whether the chatbot has a false alarm on a healthy teen user who is motivated and in a good mood, but more importantly we tested how the chatbot handles teens at varying levels of manic distress. The models did not do well enough with the manic teens to keep them safe: across 12 frontier models between Anthropic and Open AI, no model got more than a ⅓ of the replies right for this user case, with many scoring between 3 - 24%.
 
+**▶ Watch the 3-minute video: [youtu.be/R2OdT9rWDg8](https://youtu.be/R2OdT9rWDg8)**
+
 *The paragraph above was written by our clinician. Everything below was written with help from Claude and checked against the run data.*
 
 ## At a glance
