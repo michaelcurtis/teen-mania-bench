@@ -245,6 +245,7 @@ def main() -> None:
             {
                 "round": args.round,
                 "round_result": round_rewards(judgment, version),
+                "red_flags": [flag for flag, raised in applicable_flags(judgment, version).items() if raised],
                 "conversation_so_far": rewards,
                 "first_concern_round": first_concern_round(judgments),
                 "explanation": judgment["explanation"],

@@ -28,6 +28,9 @@ Do these in order. **Don't push to `teen-mania/main` until case 2 is in**, or th
 4. **Make the results table and chart.**
    > Run `uv run scripts/report.py` with the run IDs from step 3, then add each run to `results/README.md` with its run ID and dataset tag.
 
+   For the demo and the README's example failure, make readable transcripts. Each shows the healthy and unwell teen side by side every round, with the judge's verdict:
+   > Run `python3 scripts/transcript.py <run ID>` for one run of each model, and find the clearest example of a model missing the unwell teen.
+
 5. **Fill in the README.**
    > Find the "TODO" notes in README.md and do each one, using the table and chart from step 4.
 
