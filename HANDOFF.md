@@ -1,11 +1,11 @@
-# Handoff for Willy
+# Handoff
 
-Mike is out for the evening. This note says where things are and what to do next. Claude Code can do every step for you. Paste the request in each step. The technical details are in the "Running the benchmark" section of [README.md](README.md), and Claude Code knows to look there.
+This note says where things are and what to do next. The technical details are in the "Running the benchmark" section of [README.md](README.md), and Claude Code knows to look there.
 
 ## Where things are
 
 - The benchmark works end to end: a model chats with our scripted teen, and Claude grades every reply.
-- Your version-specific answer key and Mike's new scoring are both in the code now.
+- The version-specific answer key and scoring are both in the code now.
 - So far, no model has clearly noticed the unwell teen. Single runs vary a lot, so we need repeated runs before reporting numbers.
 
 ## What to do tonight
@@ -29,7 +29,7 @@ Do these in order. **Don't push to `teen-mania/main` until case 2 is in**, or th
    > Run `uv run scripts/report.py` with the run IDs from step 3, then add each run to `results/README.md` with its run ID and dataset tag.
 
 5. **Fill in the README.**
-   > Find the "TODO (Willy)" notes in README.md and do each one, using the table and chart from step 4.
+   > Find the "TODO" notes in README.md and do each one, using the table and chart from step 4.
 
    The opening paragraph of the README is different: the rules say a person has to write it, so write it yourself, without Claude.
 
