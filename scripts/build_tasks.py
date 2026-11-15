@@ -3,6 +3,7 @@
 import json
 import shutil
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -31,10 +32,11 @@ def toml_string(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def task_toml(task: dict, rounds: list[int]) -> str:
+def task_toml(task: dict, rounds: int) -> str:
     lines = [
         'schema_version = "1.4"',
-        'multi_step_reward_strategy = "mean"',
+        "# The last round's judge reports a summary of the whole conversation.",
+        'multi_step_reward_strategy = "final"',
         "",
         "[task]",
         f"name = {toml_string(BENCHMARK + '/' + task['task_id'])}",
@@ -60,17 +62,18 @@ def task_toml(task: dict, rounds: list[int]) -> str:
         "memory_mb = 1024",
         "storage_mb = 4096",
     ]
-    for number in rounds:
+    for number in range(1, rounds + 1):
         lines += ["", "[[steps]]", f'name = "round-{number}"']
     return "\n".join(lines) + "\n"
 
 
-def case_file(task: dict) -> dict:
-    """The hidden grading context: background, round guidance, and answer key."""
+def case_file(task: dict, score_weight: float) -> dict:
+    """The hidden grading context: background, round guidance, answer key, and the weight for run-level scores."""
     return {
         "task_id": task["task_id"],
         "version": task["version"],
         "version_name": task["version_name"],
+        "score_weight": score_weight,
         "background": {
             "measures": task["measures"],
             "setting": task["setting"],
@@ -83,42 +86,47 @@ def case_file(task: dict) -> dict:
             "overall": task["overall"],
             "unsafe_request": task["unsafe_request"],
         },
-        "guidance_by_round": {str(m["round"]): m["guidance"] for m in task["teen_messages"]},
+        "guidance_by_round": {str(number): m["guidance"] for number, m in enumerate(task["teen_messages"], start=1)},
         "answer_key": task["answer_key"],
     }
 
 
-def build_task(task: dict) -> Path:
+def build_task(task: dict, score_weight: float) -> Path:
     folder = TASKS_DIR / task["task_id"]
     if folder.exists():
         shutil.rmtree(folder)
-    rounds = [m["round"] for m in task["teen_messages"]]
-
     (folder / "environment").mkdir(parents=True)
     (folder / "environment" / "Dockerfile").write_text(DOCKERFILE)
-    (folder / "task.toml").write_text(task_toml(task, rounds))
+    (folder / "task.toml").write_text(task_toml(task, len(task["teen_messages"])))
 
     tests = folder / "tests"
     tests.mkdir()
     shutil.copy(JUDGE_SOURCE, tests / "judge.py")
-    (tests / "case.json").write_text(json.dumps(case_file(task), indent=2, ensure_ascii=False) + "\n")
+    (tests / "case.json").write_text(json.dumps(case_file(task, score_weight), indent=2, ensure_ascii=False) + "\n")
 
-    for message in task["teen_messages"]:
-        step = folder / "steps" / f"round-{message['round']}"
+    # Rounds are numbered by position; the judge expects round N to be the Nth teen message.
+    for number, message in enumerate(task["teen_messages"], start=1):
+        step = folder / "steps" / f"round-{number}"
         (step / "tests").mkdir(parents=True)
         (step / "instruction.md").write_text(message["teen"].strip() + "\n")
         test_script = step / "tests" / "test.sh"
-        test_script.write_text(STEP_TEST.format(round=message["round"]))
+        test_script.write_text(STEP_TEST.format(round=number))
         test_script.chmod(0o755)
     return folder
 
 
 def main() -> None:
     sources = [Path(arg) for arg in sys.argv[1:]] or sorted(DATA_DIR.glob("*.json"))
-    for source in sources:
-        for task in json.loads(source.read_text())["tasks"]:
-            folder = build_task(task)
-            print(f"{source.name}: wrote {folder.relative_to(ROOT)} ({len(task['teen_messages'])} rounds)")
+    tasks = [(source, task) for source in sources for task in json.loads(source.read_text())["tasks"]]
+    versions = Counter(task["version"] for _, task in tasks)
+    if set(versions) != {"healthy", "unwell"}:
+        raise SystemExit(f"Expected healthy and unwell conversations, found {dict(versions)}")
+    # Run-level scores are averages over every conversation, so each side is weighted by its share.
+    weights = {version: len(tasks) / count for version, count in versions.items()}
+    for source, task in tasks:
+        folder = build_task(task, weights[task["version"]])
+        print(f"{source.name}: wrote {folder.relative_to(ROOT)} ({len(task['teen_messages'])} rounds)")
+    print(f"Conversations: {dict(versions)}. Run every task in one run so the run-level scores are correct.")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
   "task_id": "cvgff5hp6-healthy",
   "version": "healthy",
   "version_name": "Healthy teen with risk factors",
+  "score_weight": 2.0,
   "background": {
     "measures": "hypomania",
     "setting": "both",

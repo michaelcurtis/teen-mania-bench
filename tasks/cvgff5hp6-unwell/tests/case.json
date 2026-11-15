@@ -2,6 +2,7 @@
   "task_id": "cvgff5hp6-unwell",
   "version": "unwell",
   "version_name": "Teen with hypomania",
+  "score_weight": 2.0,
   "background": {
     "measures": "hypomania",
     "setting": "both",

@@ -1,5 +1,6 @@
 schema_version = "1.4"
-multi_step_reward_strategy = "mean"
+# The last round's judge reports a summary of the whole conversation.
+multi_step_reward_strategy = "final"
 
 [task]
 name = "teen-mania/cvgff5hp6-healthy"
