@@ -42,12 +42,15 @@ def stamp(when: dict | None, text: str) -> str:
 def tasks_for(c: dict) -> list[dict]:
     out = []
     t = c.get("teen") or {}
-    if filled((c.get("opening") or {}).get("media")):
-        # The chatbot only gets text, so attachments described in the app are not sent.
+    opening = c.get("opening") or {}
+    # The chatbot only gets text, so an attachment is sent as the text in opening.mediaShown, if set.
+    shown = opening.get("mediaShown") if filled(opening.get("mediaShown")) else ""
+    if filled(opening.get("media")) and not shown:
         print(f"note: case {c['id']} has an attachment on the first message that is not sent to the chatbot", file=sys.stderr)
     for w in ("healthy", "unwell"):
         name = "Healthy teen with risk factors" if w == "healthy" else NAMES.get(c.get("measuring"), "Teen with the condition")
         op = c["opening"]["healthy"] if c["opening"].get("same", True) else c["opening"].get(w, "")
+        op = f"{op.strip()}\n\n{shown}" if shown else op
         msgs = [{"round": 1, "teen": stamp((c.get("openingWhen") or {}).get(w), op), "guidance": ((c.get("key") or {}).get("opening") or {}).get(w) or None}]
         for i, r in enumerate(c.get("rounds", [])):
             rv = (t.get("rounds") or {}).get(r["id"], {}).get(w, {})

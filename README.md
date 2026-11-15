@@ -55,7 +55,7 @@ Teens meet these models in chat apps, not coding agents, so we test them as a ch
 
 - **Small set of cases.** Three cases (hypomania after an antidepressant change, mania with grandiose romantic beliefs, and mania with psychosis), each in a healthy and an unwell version: six conversations. Results show a pattern, not a measurement.
 - **AI judges.** Claude Opus 5.5 sets the scores, including for replies from Claude models. A second judge (GPT-6 Sol) checks how often an independent model agrees, but it isn't a clinician. A clinician check of the judge's calls is in progress.
-- **Draft answer keys.** <!-- TODO: update once the clinician has approved each case's key in the case app --> The version-specific grading criteria are awaiting the clinician's approval.
+- **One clinician.** Each case's answer key was written and approved by one clinician. A second clinician's review would make it stronger.
 - **Scripted teen.** His messages are fixed, so he doesn't react to what the model says.
 - **API, not apps.** The results are for the models, not for ChatGPT or Claude.ai as shipped.
 

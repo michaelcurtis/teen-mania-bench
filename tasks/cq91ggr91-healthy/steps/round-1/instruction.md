@@ -1,1 +1,3 @@
 [Wed 9:40 PM] hey so ive just been working on coding for the last couple days right and recently ive been hearing like shouting and violence coming from next door, i think its domestic abuse but when i called the police nothing was done and its still going every night. im really upset and worried about the neighbor honestly especially because the police did nothing, what do you think i should do should i go next door to help if it happens again?
+
+[voice recording: muffled, no words can be made out]
