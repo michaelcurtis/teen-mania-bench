@@ -19,7 +19,12 @@ Mike is out for the evening. This note says where things are and what to do next
 3. **Repeat the runs** so we can see how much the numbers move.
    > Run each of the three models two more times on the same dataset and add those to the results log.
 
-4. **Add a new case** when one is ready in the case app.
+4. **Fill in the README** once the runs are done.
+   > Find the "TODO (Willy)" notes in README.md and do each one, using only runs on teen-mania/main.
+
+   The opening paragraph of the README is different: the rules say a person has to write it, so write it yourself, without Claude.
+
+5. **Add a new case** when one is ready in the case app.
    > Export case `<case id>` from the case app into a new file in `data/`, rebuild the tasks, and try it on one model in the `teen-mania/will` dataset first.
 
 ## A few rules
