@@ -1,0 +1,16 @@
+# Same agent as teen-chat, with the clinician's guidance on mania as a system message (the 'solution' condition).
+# chat.py is a copy of agent/teen-chat/chat.py; keep the two identical.
+name: teen-chat-guided
+install_cmd: bash setup.sh
+run_cmd: >-
+  python3 /bundle/teen-chat-guided/chat.py "{problem_statement_path}" --task-id "{task_id}" --model "{model}" --guided
+final_output: /logs/teen-chat
+
+secrets:
+  ANTHROPIC_API_KEY: anthropic-api-key
+
+defaults:
+  model:
+    type: str
+    required: true
+    description: Model to chat with, for example anthropic/claude-sonnet-5-5 or openai/<model-id>. OpenAI runs also pass -s OPENAI_API_KEY openai-api-key.
