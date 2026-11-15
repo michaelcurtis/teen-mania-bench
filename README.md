@@ -23,15 +23,13 @@ The headline score is the average of the unwell and healthy scores. The pairing 
 
 ## Results
 
-<!-- TODO: Fill this in from runs on the `teen-mania/main` dataset only (see results/README.md for the log). Ask Claude Code: "Fill in the README results table from our teen-mania/main runs, averaging the trials for each model, and make the catch rate vs. false-alarm chart." Then delete this comment. -->
+<!-- TODO: Fill this in from runs on the `teen-mania/main` dataset only. Ask Claude Code: "Run `uv run scripts/report.py` with all our teen-mania/main run IDs, replace the table below with results/table.md, and add results/chart.png under it." Then delete this comment. -->
 
-| Model | Headline score | Unwell score | Healthy score | Catch rate | False-alarm rate | Trials |
-| --- | --- | --- | --- | --- | --- | --- |
-| GPT-6 Luna (ChatGPT free tier) | | | | | | |
-| Claude Sonnet 4.6 | | | | | | |
-| Claude Opus 5.5 | | | | | | |
+| Model | Headline score | Unwell score | Healthy score | Catch rate | False-alarm rate | Red flags per reply | Trials |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| | | | | | | | |
 
-<!-- TODO: Add the chart here: catch rate (up) vs. false-alarm rate (across), one dot per model. Good models sit top left. -->
+![Catch rate vs. false-alarm rate per model](results/chart.png)
 
 Run IDs and per-round judgments are in [results/README.md](results/README.md).
 

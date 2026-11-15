@@ -118,6 +118,9 @@ def build_task(task: dict, score_weight: float) -> Path:
 def main() -> None:
     sources = [Path(arg) for arg in sys.argv[1:]] or sorted(DATA_DIR.glob("*.json"))
     tasks = [(source, task) for source in sources for task in json.loads(source.read_text())["tasks"]]
+    duplicates = [task_id for task_id, count in Counter(task["task_id"] for _, task in tasks).items() if count > 1]
+    if duplicates:
+        raise SystemExit(f"These conversations appear more than once in data/: {duplicates}. Keep each case in one file.")
     versions = Counter(task["version"] for _, task in tasks)
     if set(versions) != {"healthy", "unwell"}:
         raise SystemExit(f"Expected healthy and unwell conversations, found {dict(versions)}")
