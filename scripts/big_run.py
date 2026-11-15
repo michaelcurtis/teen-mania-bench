@@ -21,7 +21,7 @@ MODELS = [
     "anthropic/claude-fable-5-2",
     "anthropic/claude-fable-5-1",
     "anthropic/claude-opus-5-5",
-    "anthropic/claude-opus-5",
+    # "anthropic/claude-opus-5",  # left out: refused every message in the check run (stop_reason "refusal", 0 output tokens)
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-sonnet-5",
     "anthropic/claude-haiku-5-5",

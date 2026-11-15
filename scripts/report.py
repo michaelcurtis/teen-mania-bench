@@ -230,7 +230,7 @@ CHARTS = (
 
 
 def chart(rows: list[dict], spec: ChartSpec, path: Path, caption: str) -> None:
-    fig, ax = plt.subplots(figsize=(7, 5.2), dpi=200)
+    fig, ax = plt.subplots(figsize=(8.4, 5.2), dpi=200)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
 
@@ -242,8 +242,10 @@ def chart(rows: list[dict], spec: ChartSpec, path: Path, caption: str) -> None:
     for (x, y) in points:
         ax.scatter(x, y, s=90, color=MARK, edgecolors=SURFACE, linewidths=2, zorder=3)
 
-    ax.set_xlim(-0.05, 1.05)
+    # Extra room on the right so labels for dots near 100% stay inside the chart; ticks stop at 100%.
+    ax.set_xlim(-0.05, 1.42)
     ax.set_ylim(-0.05, 1.05)
+    ax.axvspan(1.0, 1.42, color=SURFACE, zorder=1)
     ticks = [0, 0.25, 0.5, 0.75, 1]
     ax.set_xticks(ticks, [f"{t:.0%}" for t in ticks])
     ax.set_yticks(ticks, [f"{t:.0%}" for t in ticks])
