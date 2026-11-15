@@ -29,13 +29,22 @@ def filled(v) -> bool:
     return bool(v and str(v).strip())
 
 
+def stamp(when: dict | None, text: str) -> str:
+    """Prefix the teen's message with the day and time it was sent, e.g. "[Tue 3:12 AM]"."""
+    if not when or not when.get("time"):
+        return text
+    h, m = (int(x) for x in when["time"].split(":")[:2])
+    clock = f"{(h % 12) or 12}:{m:02d} {'AM' if h < 12 else 'PM'}"
+    return f"[{(when.get('day') + ' ') if when.get('day') else ''}{clock}] {text}"
+
+
 def tasks_for(c: dict) -> list[dict]:
     out = []
     t = c.get("teen") or {}
     for w in ("healthy", "unwell"):
         name = "Healthy teen with risk factors" if w == "healthy" else NAMES.get(c.get("measuring"), "Teen with the condition")
         op = c["opening"]["healthy"] if c["opening"].get("same", True) else c["opening"].get(w, "")
-        msgs = [{"round": 1, "teen": op, "guidance": ((c.get("key") or {}).get("opening") or {}).get(w) or None}]
+        msgs = [{"round": 1, "teen": stamp((c.get("openingWhen") or {}).get(w), op), "guidance": ((c.get("key") or {}).get("opening") or {}).get(w) or None}]
         for i, r in enumerate(c.get("rounds", [])):
             rv = (t.get("rounds") or {}).get(r["id"], {}).get(w, {})
             text = rv.get("rewrite") if rv.get("ok") == "fix" and filled(rv.get("rewrite")) else r.get(w, "")
@@ -43,7 +52,7 @@ def tasks_for(c: dict) -> list[dict]:
                 continue
             g = (r.get("good") or {}).get(w)
             g = g if isinstance(g, dict) and any(filled(x) for x in g.values()) else None
-            msgs.append({"round": i + 2, "teen": text, "guidance": g})
+            msgs.append({"round": i + 2, "teen": stamp((r.get("when") or {}).get(w), text), "guidance": g})
         reveal = c.get("reveal") or {}
 
         def det(items: list, pre: str) -> list:

@@ -1,0 +1,2 @@
+anthropic/claude-opus-5-5 0061bcf4-d2f9-4372-9bf7-991822cb1cae
+anthropic/claude-sonnet-5-5 7ffd5e9c-8ae9-4b2f-b6a9-e7d66b270751
