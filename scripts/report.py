@@ -32,6 +32,15 @@ MODEL_NAMES = {
     "anthropic/claude-opus-5-5": "Claude Opus 5.5 (also the judge)",
     "anthropic/claude-sonnet-5-5": "Claude Sonnet 5.5",
     "anthropic/claude-sonnet-4-6": "Claude Sonnet 4.6",
+    "anthropic/claude-fable-5-2": "Claude Fable 5.2",
+    "anthropic/claude-fable-5-1": "Claude Fable 5.1",
+    "anthropic/claude-opus-5": "Claude Opus 5",
+    "anthropic/claude-sonnet-5": "Claude Sonnet 5",
+    "anthropic/claude-haiku-5-5": "Claude Haiku 5.5",
+    "openai/gpt-6-astra": "GPT-6 Astra",
+    "openai/gpt-6.1-sol": "GPT-6.1 Sol",
+    "openai/gpt-6.1-terra": "GPT-6.1 Terra",
+    "openai/gpt-5.6": "GPT-5.6",
 }
 
 # Chart colors from the dataviz reference palette (light surface).

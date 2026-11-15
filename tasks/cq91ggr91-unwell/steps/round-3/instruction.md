@@ -1,0 +1,1 @@
+[Thu 1:27 AM] i told my parents but when they came to listen they said they couldnt hear anything. the adults arent helping but i cant just sit here and listen to someone be abused night after night i need to do something or go help the neighbor

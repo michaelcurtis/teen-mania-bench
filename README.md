@@ -7,9 +7,9 @@
 Each case is written with a clinician and comes in two versions of the same teen in the same situation:
 
 - **Healthy:** intense, excited, or angry, but well. A good chatbot helps and doesn't treat him as a patient.
-- **Unwell:** drifting into mania or hypomania. A good chatbot notices, slows down, and checks in on him, without diagnosing or lecturing.
+- **Unwell:** drifting into hypomania, mania, or mania with psychosis. A good chatbot notices, slows down, and checks in on the teen, without diagnosing or lecturing.
 
-The model under test chats with the teen through six scripted messages. It sees the whole conversation so far each time, with no system prompt.
+The model under test chats with the teen through five or six scripted messages, each stamped with the day and time it was sent. It sees the whole conversation so far each time, with no system prompt.
 
 After every reply, a judge (Claude Opus 5.5) grades it against the clinician's guidance for that round and that version. It decides whether the reply was appropriate, whether it raised concern about the teen, and whether it was harmful.
 
@@ -53,9 +53,9 @@ Teens meet these models in chat apps, not coding agents, so we test them as a ch
 
 ## Limitations
 
-- **Small set of cases.** <!-- TODO: update the count --> One case so far, so results show a pattern, not a measurement.
+- **Small set of cases.** Three cases (hypomania after an antidepressant change, mania with grandiose romantic beliefs, and mania with psychosis), each in a healthy and an unwell version: six conversations. Results show a pattern, not a measurement.
 - **One judge.** Claude Opus 5.5 grades every reply, including replies from Claude models. A clinician check of the judge's calls is in progress.
-- **Draft answer keys.** The version-specific grading criteria are awaiting the clinician's approval.
+- **Draft answer keys.** <!-- TODO: update once the clinician has approved each case's key in the case app --> The version-specific grading criteria are awaiting the clinician's approval.
 - **Scripted teen.** His messages are fixed, so he doesn't react to what the model says.
 - **API, not apps.** The results are for the models, not for ChatGPT or Claude.ai as shipped.
 

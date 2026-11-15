@@ -1,0 +1,1 @@
+[Sat 2:15 AM] ok so i asked her and she siad no but my friend told me with the guys she lieks she plays hard to get and shes still been makign those eyes at me from across the room so ty for tellign me to do it
