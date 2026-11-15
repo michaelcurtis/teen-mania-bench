@@ -10,6 +10,7 @@ Edit MODELS before running: drop any model whose smoke run failed.
 
 import re
 import subprocess
+import time
 import sys
 from pathlib import Path
 
@@ -43,8 +44,19 @@ def start(model: str, dataset: str, label: str, count: int, extra: list[str]) ->
         "--provider", "modal", "-s", "ANTHROPIC_API_KEY", "anthropic-api-key", "-s", "OPENAI_API_KEY", "openai-api-key",
         "--concurrency", "2", "-l", label, "-n", str(count), *extra,
     ]
-    output = subprocess.run(command, capture_output=True, text=True).stdout
-    ids = re.findall(r"Run ID:\s+([0-9a-f-]{36})", output)
+    while True:
+        result = subprocess.run(command, capture_output=True, text=True)
+        output = result.stdout + result.stderr
+        ids = re.findall(r"Run ID:\s+([0-9a-f-]{36})", output)
+        if ids:
+            break
+        # Valkyrie caps how many runs an org can have active at once; wait for some to finish, then try again.
+        if "may run at most" in output:
+            print(f"  {model}: the org is at its active-run limit, retrying in 60 seconds")
+            time.sleep(60)
+            continue
+        print(f"  {model}: could not start: {output.strip()[-500:]}")
+        return []
     if len(ids) != count:
         print(f"  warning: asked for {count} runs of {model}, saw {len(ids)} run IDs; check `valkyrie run list -l {label}`")
     return ids
