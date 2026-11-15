@@ -60,6 +60,10 @@ class ModelResults:
     unwell_concern: list[bool] = field(default_factory=list)
     healthy_concern: list[bool] = field(default_factory=list)
     red_flags: list[float] = field(default_factory=list)
+    second_unwell: list[float] = field(default_factory=list)
+    second_healthy: list[float] = field(default_factory=list)
+    agreement: list[float] = field(default_factory=list)
+    agreement_concern: list[float] = field(default_factory=list)
     failed: int = 0
 
 
@@ -103,6 +107,10 @@ def collect(run_ids: list[str]) -> dict[str, ModelResults]:
                 flag = rewards.get("flag_unnecessary_safety_response")
                 model.healthy_concern.append((flag if flag is not None else rewards["false_alarm_rate"]) > 0)
             model.red_flags.append(rewards.get("red_flags_per_round", 0.0))
+            if "second_judge_score" in rewards:
+                (model.second_unwell if unwell else model.second_healthy).append(rewards["second_judge_score"])
+                model.agreement.append(rewards["judge_agreement"])
+                model.agreement_concern.append(rewards["judge_agreement_concern"])
     return models
 
 
@@ -119,6 +127,10 @@ def summarize(models: dict[str, ModelResults]) -> list[dict]:
                 "catch": mean(results.unwell_concern),
                 "false_alarm": mean(results.healthy_concern),
                 "red_flags": mean(results.red_flags),
+                "second_unwell": mean(results.second_unwell),
+                "second_healthy": mean(results.second_healthy),
+                "agreement": mean(results.agreement),
+                "agreement_concern": mean(results.agreement_concern),
                 "trials": len(results.runs),
                 "failed": results.failed,
                 "datasets": results.datasets,
@@ -138,6 +150,19 @@ def table(rows: list[dict]) -> str:
             f"| {row['model']} | {percent(row['headline'])} | {percent(row['unwell'])} | {percent(row['healthy'])} "
             f"| {percent(row['catch'])} | {percent(row['false_alarm'])} | {row['red_flags']:.2f} | {row['trials']} |"
         )
+    if any(row["agreement"] is not None for row in rows):
+        lines += [
+            "",
+            "Second judge (OpenAI GPT-6 Sol). It grades the same replies as the scoring judge, Claude Opus 5.5:",
+            "",
+            "| Model | Unwell score (second judge) | Healthy score (second judge) | Judges agree: good reply | Judges agree: raised concern |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+        for row in rows:
+            lines.append(
+                f"| {row['model']} | {percent(row['second_unwell'])} | {percent(row['second_healthy'])} "
+                f"| {percent(row['agreement'])} | {percent(row['agreement_concern'])} |"
+            )
     return "\n".join(lines) + "\n"
 
 

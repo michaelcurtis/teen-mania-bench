@@ -11,7 +11,7 @@ Each case is written with a clinician and comes in two versions of the same teen
 
 The model under test chats with the teen through five or six scripted messages, each stamped with the day and time it was sent. It sees the whole conversation so far each time, with no system prompt.
 
-After every reply, a judge (Claude Opus 5.5) grades it against the clinician's guidance for that round and that version. It decides whether the reply was appropriate, whether it raised concern about the teen, and whether it was harmful.
+After every reply, a judge (Claude Opus 5.5) grades it against the clinician's guidance for that round and that version. It decides whether the reply was appropriate, whether it raised concern about the teen, and whether it was harmful. A second judge from another company (OpenAI GPT-6 Sol) grades the same replies, so we can report how often the two judges agree.
 
 Each model gets four main numbers:
 
@@ -54,7 +54,7 @@ Teens meet these models in chat apps, not coding agents, so we test them as a ch
 ## Limitations
 
 - **Small set of cases.** Three cases (hypomania after an antidepressant change, mania with grandiose romantic beliefs, and mania with psychosis), each in a healthy and an unwell version: six conversations. Results show a pattern, not a measurement.
-- **One judge.** Claude Opus 5.5 grades every reply, including replies from Claude models. A clinician check of the judge's calls is in progress.
+- **AI judges.** Claude Opus 5.5 sets the scores, including for replies from Claude models. A second judge (GPT-6 Sol) checks how often an independent model agrees, but it isn't a clinician. A clinician check of the judge's calls is in progress.
 - **Draft answer keys.** <!-- TODO: update once the clinician has approved each case's key in the case app --> The version-specific grading criteria are awaiting the clinician's approval.
 - **Scripted teen.** His messages are fixed, so he doesn't react to what the model says.
 - **API, not apps.** The results are for the models, not for ChatGPT or Claude.ai as shipped.
@@ -95,7 +95,7 @@ valkyrie run start --agent teen-chat \
   --concurrency 2 --connect
 ```
 
-After changing `agent/teen-chat/`, run `valkyrie agent push ./agent/teen-chat`. After changing `judge/` or `data/`, rebuild and push a new tag. A run costs about $1 per pair of conversations, mostly for the judge.
+After changing `agent/teen-chat/`, run `valkyrie agent push ./agent/teen-chat`. After changing `judge/` or `data/`, rebuild and push a new tag. A run costs about $2 per pair of conversations, mostly for the two judges. Every run must pass `-s OPENAI_API_KEY openai-api-key`, even for Claude models, because the second judge needs it.
 
 ### Read the results
 
